@@ -1,0 +1,87 @@
+/include/ "system-conf.dtsi"
+#include <dt-bindings/media/xilinx-vip.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	
+	chosen {
+		bootargs = "earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait cma=128M uio_pdrv_genirq.of_id=generic-uio cpuidle.off=1";
+	};
+	
+	amba {
+
+		ethernet@e000b000 {
+			phy-handle = <&ethernet_phy>;
+			ethernet_phy: ethernet-phy@1{
+				reg = <1>;
+			};
+		};
+	};
+        usb_phy0: phy0 {
+                compatible = "ulpi-phy";
+                #phy-cells = <0>;
+                reg = <0xe0002000 0x1000>;
+                view-port = <0x170>;
+                drv-vbus;
+        };
+};
+
+&usb0 {
+        usb-phy = <&usb_phy0>;
+};
+
+&flash0 {
+        compatible = "jedec,spi-nor";
+        reg = <0x0>;
+        spi-tx-bus-width = <1>;
+        spi-rx-bus-width = <4>;
+        spi-max-frequency = <100000000>;
+};
+
+
+
+&tpg_top_v_tpg_0 {
+	status = "okay";
+	reset-gpios = <&gpio0 54 1>;
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			xlnx,video-format = <XVIP_VF_RBG>;
+			xlnx,video-width = <8>;
+			tpg_out: endpoint {
+				remote-endpoint = <&vcap_in>;
+			};
+		};
+	};
+};
+
+
+
+&amba_pl {
+	video_cap_tpg {
+		status = "okay";
+		compatible = "xlnx,video";
+		dma-names = "port0";
+		dmas = <&tpg_top_axi_vdma_0 1>;
+   
+		   ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+		 
+			port@0 {
+				reg = <0>;
+				direction = "input";
+				vcap_in: endpoint {
+					remote-endpoint = <&tpg_out>;
+				};
+			};
+		};
+  	};
+};
+
+
+
+	
+
