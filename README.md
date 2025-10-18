@@ -41,7 +41,7 @@ Write generated .wic image(under `yocto/build/tmp-glibc/deploy/images/pynq-z1/im
 
 Run tpg-overlay on the target
 ```bash
-./tpg-overlay
+./tpg-overlay -w 1280 -h 720 -i 192.168.1.20 -p 5004
 ```
 
 Run gstreamer command on host PC

@@ -35,6 +35,14 @@ std::condition_variable g_status_cv;
 std::atomic<bool> g_status_update_requested{false};
 std::atomic<bool> g_should_exit{false};
 
+struct AppConfig
+{
+    int width = WIDTH;
+    int height = HEIGHT;
+    std::string ip_address = PC_IP_ADDRESS;
+    int port = PORT;
+};
+
 void TriggerStatusUpdate()
 {
     {
@@ -173,13 +181,68 @@ void SignalHandler(int signal)
     g_status_cv.notify_all();
 }
 
-int main()
+void PrintUsage(const char *program_name)
+{
+    std::cout << "Usage: " << program_name << " [options]\n"
+              << "Options:\n"
+              << "  -w, --width <width>      Video width (default: " << WIDTH << ")\n"
+              << "  -h, --height <height>    Video height (default: " << HEIGHT << ")\n"
+              << "  -i, --ip <ip_address>    Target IP address (default: " << PC_IP_ADDRESS << ")\n"
+              << "  -p, --port <port>        Target port (default: " << PORT << ")\n"
+              << "  --help                   Show this help message\n"
+              << "\nExample:\n"
+              << "  " << program_name << " -w 640 -h 480 -i 192.168.1.100 -p 5005\n";
+}
+
+AppConfig ParseArguments(int argc, char *argv[])
+{
+    AppConfig config;
+
+    for (int i = 1; i < argc; i++)
+    {
+        std::string arg = argv[i];
+
+        if (arg == "--help")
+        {
+            PrintUsage(argv[0]);
+            exit(0);
+        }
+        else if ((arg == "-w" || arg == "--width") && i + 1 < argc)
+        {
+            config.width = std::stoi(argv[++i]);
+        }
+        else if ((arg == "-h" || arg == "--height") && i + 1 < argc)
+        {
+            config.height = std::stoi(argv[++i]);
+        }
+        else if ((arg == "-i" || arg == "--ip") && i + 1 < argc)
+        {
+            config.ip_address = argv[++i];
+        }
+        else if ((arg == "-p" || arg == "--port") && i + 1 < argc)
+        {
+            config.port = std::stoi(argv[++i]);
+        }
+        else
+        {
+            std::cerr << "Unknown argument: " << arg << std::endl;
+            PrintUsage(argv[0]);
+            exit(1);
+        }
+    }
+
+    return config;
+}
+
+int main(int argc, char *argv[])
 {
     spdlog::set_level(spdlog::level::info);
     spdlog::set_pattern("[%^%l%$] %v");
 
     std::signal(SIGINT, SignalHandler);
     std::signal(SIGTERM, SignalHandler);
+
+    AppConfig app_config = ParseArguments(argc, argv);
 
     try
     {
@@ -192,8 +255,8 @@ int main()
         config.video_device = "/dev/video0";
         config.subdev_device = "/dev/v4l-subdev0";
         config.tpg_entity = "43c00000.v_tpg";
-        config.width = WIDTH;
-        config.height = HEIGHT;
+        config.width = app_config.width;
+        config.height = app_config.height;
 
         g_tpg = std::make_unique<Tpg::TpgDriver>(config);
 
@@ -246,7 +309,7 @@ int main()
                                                                                                      "queue ! videoconvert ! video/x-raw,format=I420 ! "
                                                                                                      "jpegenc quality=90 ! rtpjpegpay pt=26 ! "
                                                                                                      "udpsink host=" +
-            PC_IP_ADDRESS + " port=" + std::to_string(PORT) + " sync=true";
+            app_config.ip_address + " port=" + std::to_string(app_config.port) + " sync=true";
 
         cv::VideoWriter udp_writer(writer_pipeline, cv::CAP_GSTREAMER, 0, FRAMERATE, cv::Size(config.width, config.height), true);
 
@@ -331,9 +394,17 @@ int main()
                         cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 255), 2);
 
             y_offset += line_height;
-            info_text = "Streaming to: " + PC_IP_ADDRESS + ":" + std::to_string(PORT);
+            info_text = "Streaming to: " + app_config.ip_address + ":" + std::to_string(app_config.port);
             cv::putText(frame, info_text, cv::Point(10, y_offset),
                         cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 255), 2);
+
+            y_offset += line_height;
+            info_text = "Type: " + std::to_string(frame.type()) + " Channel: " + std::to_string(frame.channels()) +
+                        " Depth: " + std::to_string(frame.depth());
+            cv::putText(frame, info_text, cv::Point(10, y_offset),
+                        cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 255), 2);
+
+            // cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
 
             udp_writer.write(frame);
             frame_count++;
