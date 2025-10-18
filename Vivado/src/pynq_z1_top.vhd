@@ -89,8 +89,9 @@ architecture rtl of pynq_z1_top is
       FIXED_IO_ps_porb  : inout std_logic;
       FIXED_IO_ps_srstb : inout std_logic;
       CLK100            : out std_logic;
-      CLK_148_5         : out std_logic;
       FCLK_RESET_N      : out std_logic;
+      
+      GPIO_tri_i         : in std_logic_vector(5 downto 0);
       
       LED2               : out std_logic;
       LED3               : out std_logic
@@ -101,12 +102,10 @@ architecture rtl of pynq_z1_top is
   -- signal declarations
   ----------------------------------------------------------------------------------------------------
   signal clk100       : std_logic;
-  signal clk148_5     : std_logic;
   signal fclk_reset_n : std_logic;
   signal LedCount     : unsigned(23 downto 0);
-  signal LedCount1     : unsigned(23 downto 0);
+  signal gpio_in_signals : std_logic_vector(5 downto 0);
   
-
   ----------------------------------------------------------------------------------------------------
   -- attribute declarations
   ----------------------------------------------------------------------------------------------------
@@ -119,7 +118,6 @@ begin
   pynq_z1_i : component pynq_z1
     port map(
       CLK100                    => clk100,
-      CLK_148_5                 => clk148_5,
       DDR_addr(14 downto 0)     => DDR_addr(14 downto 0),
       DDR_ba(2 downto 0)        => DDR_ba(2 downto 0),
       DDR_cas_n                 => DDR_cas_n,
@@ -143,9 +141,16 @@ begin
       FIXED_IO_ps_porb          => FIXED_IO_ps_porb,
       FIXED_IO_ps_srstb         => FIXED_IO_ps_srstb,
       LED2                      => LED2,
-      LED3                      => LED3   
+      LED3                      => LED3,
+      GPIO_tri_i                => gpio_in_signals   
     );
     
+    gpio_in_signals(0) <= SWITCH1;
+    gpio_in_signals(1) <= SWITCH2;
+    gpio_in_signals(2) <= BUTTON1;
+    gpio_in_signals(3) <= BUTTON2;
+    gpio_in_signals(4) <= BUTTON3;
+    gpio_in_signals(5) <= BUTTON4;
 
     process (clk100)
     begin
@@ -160,20 +165,7 @@ begin
     LED1 <= '0' when LedCount(LedCount'high) = '0' else
       '1';
     
-    
-    process (clk148_5)
-    begin
-      if rising_edge (clk148_5) then
-        if fclk_reset_n = '0' then
-          LedCount1 <= (others => '0');
-        else
-          LedCount1 <= LedCount1 + 1;
-        end if;
-      end if;
-    end process;
-    LED4 <= '0' when LedCount1(LedCount1'high) = '0' else
-      '1';
-      
-      
+
+     
 
   end rtl;

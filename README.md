@@ -15,25 +15,26 @@ cd Vivado
 make
 ```
 
-## Build Petalinux Project
+## Build Yocto Project
+Check requirements for Yocto Build
+
+[Preparing host build](https://docs.yoctoproject.org/singleindex.html#preparing-the-build-host)
+
+[System Requirements](https://docs.yoctoproject.org/scarthgap/ref-manual/system-requirements.html#system-requirements)
+
+
+Install KAS tool
 ```bash
-petalinux-create --type project --template zynq --name <project_name> 
-petalinux-config --get-hw-description ../Vivado/pynq_z1.xsa --silentconfig
-```
-Note: Replace meta-user folder in the repository with the meta-user folder in project.
-```bash
-petalinux-build
-petalinux-package --boot --fsbl images/linux/zynq_fsbl.elf --u-boot images/linux/u-boot.elf --fpga images/linux/system.bit --force
-petalinux-package wic
-gedit build/rootfs.wks 
-```
-Note: default wks image's partitions are high(2G, 4G), you can change to 100M, 300M respectively
-```bash
-petalinux-package wic --wks build/rootfs.wks
+pip install kas
 ```
 
-Write generated .wic image(under `linux/images` folder) using tools such as Balena Etcher.
+Build project
+```bash
+cd yocto
+make
+```
 
+Write generated .wic image(under `yocto/build/tmp-glibc/deploy/images/pynq-z1/image-pynq-z1-pynq-z1.rootfs.wic` folder) using tools such as Balana Etcher.
 
 
 ## V4L2 and Gstreamer Commands
@@ -59,7 +60,7 @@ This command lists the available options for any menu-type controls on a specifi
 
 ```bash
 v4l2-ctl -d /dev/v4l-subdev0 --list-ctrls
-```
+```gst-launch-1.0 udpsrc port="5004" caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)BGR, depth=(string)8, width=(string)640, height=(string)480, colorimetry=(string)BT601-5, payload=(int)96, ssrc=(uint)1103043224, timestamp-offset=(uint)1948293153, seqnum-offset=(uint)27904" ! rtpvrawdepay ! videoconvert ! queue ! fpsdisplaysink text-overlay=true sync=true
 
 This command lists all the supported video formats, resolutions, and frame rates for the video device located at /dev/video0
 
@@ -75,7 +76,7 @@ This command configures the video format for a specific component within a media
 Specifically, it sets the output of a Test Pattern Generator (TPG) to produce an RGB video stream at a 640x480 resolution.
 
 ```bash
-media-ctl -v –d /dev/media0 -V '"43c00000.v_tpg":0[fmt:BGR888_1X24/640x480 field:none]' 
+media-ctl -v –d /dev/media0 -V '"43c00000.v_tpg":0[fmt:RBG888_1X24/640x480 field:none]' 
 ```
 
 This command configures the video device at /dev/video0 to capture video with a specific resolution and pixel format. It tells the device to start producing a 640x480 video stream using 24-bit RGB color.

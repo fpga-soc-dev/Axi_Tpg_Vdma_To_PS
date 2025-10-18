@@ -6,13 +6,13 @@ all: create_project bitstream check_timing clean_logs
 	@echo
 
 create_project:
-	vivado -mode batch -source scripts/create_project.tcl -notrace
+	vivado -mode batch -nojournal -source scripts/create_project.tcl -notrace
 	
 bitstream:
-	vivado -mode batch -source scripts/build_bitstream.tcl -notrace
+	vivado -mode batch -nojournal -source scripts/build_bitstream.tcl -notrace
 
 check_timing:
-	vivado -mode batch -source check_timing.tcl -notrace
+	vivado -mode batch -nojournal -source check_timing.tcl -notrace
 
 clean_logs:
 	rm -rf *.jou *.log NA .Xil

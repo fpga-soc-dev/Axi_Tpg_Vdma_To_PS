@@ -30,9 +30,9 @@ launch_runs impl_1 -to_step write_bitstream -jobs $cores
 wait_on_run impl_1
 
 # generate xsa
-write_hw_platform -fixed -force -include_bit ./${board_name}.xsa
+write_hw_platform -fixed -force -include_bit ./${board_name}_top.xsa
 validate_hw_platform ./${board_name}.xsa
 
 # move and rename bitstream to final location
-file copy -force ./${board_name}/${board_name}.runs/impl_1/${top_vhd_file}.bit ${board_name}.bit
+file copy -force ./${board_name}/${board_name}.runs/impl_1/${top_vhd_file}.bit ${board_name}_top.bit
 
