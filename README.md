@@ -60,7 +60,11 @@ This command lists the available options for any menu-type controls on a specifi
 
 ```bash
 v4l2-ctl -d /dev/v4l-subdev0 --list-ctrls
-```gst-launch-1.0 udpsrc port="5004" caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)BGR, depth=(string)8, width=(string)640, height=(string)480, colorimetry=(string)BT601-5, payload=(int)96, ssrc=(uint)1103043224, timestamp-offset=(uint)1948293153, seqnum-offset=(uint)27904" ! rtpvrawdepay ! videoconvert ! queue ! fpsdisplaysink text-overlay=true sync=true
+```
+
+```bash
+gst-launch-1.0 udpsrc port="5004" caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)BGR, depth=(string)8, width=(string)640, height=(string)480, colorimetry=(string)BT601-5, payload=(int)96, ssrc=(uint)1103043224, timestamp-offset=(uint)1948293153, seqnum-offset=(uint)27904" ! rtpvrawdepay ! videoconvert ! queue ! fpsdisplaysink text-overlay=true sync=true
+```
 
 This command lists all the supported video formats, resolutions, and frame rates for the video device located at /dev/video0
 
