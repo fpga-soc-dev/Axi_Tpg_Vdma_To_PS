@@ -37,8 +37,7 @@ make
 Write generated .wic image(under `yocto/build/tmp-glibc/deploy/images/pynq-z1/image-pynq-z1-pynq-z1.rootfs.wic` folder) using tools such as Balana Etcher.
 
 
-## V4L2 and Gstreamer Commands
-
+## Run TPG overlay
 
 Run tpg-overlay on the target
 ```bash
