@@ -39,6 +39,19 @@ Write generated .wic image(under `yocto/build/tmp-glibc/deploy/images/pynq-z1/im
 
 ## V4L2 and Gstreamer Commands
 
+
+Run tpg-overlay on the target
+```bash
+./tpg-overlay
+```
+
+Run gstreamer command on host PC
+```bash
+gst-launch-1.0 -v udpsrc port=5004 caps="application/x-rtp,media=video,encoding-name=JPEG,payload=26" ! rtpjitterbuffer latency=50 ! rtpjpegdepay ! jpegdec ! videoconvert ! fpsdisplaysink text-overlay=true video-sink=autovideosink sync=true
+```
+
+## Some Gstreamer commands to run pipeline on TPG+VDMA design
+
 Check media devices
 ```bash
 media-ctl -p -d /dev/media0 

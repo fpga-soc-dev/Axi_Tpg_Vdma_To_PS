@@ -36,6 +36,7 @@ namespace Tpg
     enum class PixelFormat
     {
         RGB888,
+        RBG888,
         YUV422
     };
 

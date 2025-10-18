@@ -158,6 +158,8 @@ namespace Tpg
         {
         case V4L2_PIX_FMT_RGB24:
             return PixelFormat::RGB888;
+        case V4L2_PIX_FMT_BGR24:
+            return PixelFormat::RBG888;
         case V4L2_PIX_FMT_UYVY:
             return PixelFormat::YUV422;
         default:
@@ -439,6 +441,8 @@ namespace Tpg
         {
         case PixelFormat::RGB888:
             return MEDIA_BUS_FMT_RBG888_1X24;
+        case PixelFormat::RBG888:
+            return MEDIA_BUS_FMT_RBG888_1X24;
         case PixelFormat::YUV422:
             return MEDIA_BUS_FMT_UYVY8_1X16;
         default:
@@ -518,6 +522,8 @@ namespace Tpg
         {
         case PixelFormat::RGB888:
             return V4L2_PIX_FMT_RGB24;
+        case PixelFormat::RBG888:
+            return V4L2_PIX_FMT_BGR24;
         case PixelFormat::YUV422:
             return V4L2_PIX_FMT_UYVY;
 

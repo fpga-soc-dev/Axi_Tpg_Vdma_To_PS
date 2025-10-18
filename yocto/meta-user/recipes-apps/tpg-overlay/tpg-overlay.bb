@@ -5,9 +5,12 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI = "\
     file://CMakeLists.txt \
     file://main.cpp \
-    file://VideoProcessing/VideoCaptureV4L2.cpp \
-    file://VideoProcessing/VideoCaptureV4L2.hpp \
-    file://VideoProcessing/UdpVideoSender.hpp \  
+    file://Gpio/Gpio.cpp \
+    file://Gpio/Gpio.hpp \
+    file://TpgDriver/TpgDriver.cpp \
+    file://TpgDriver/TpgDriver.hpp \
+    file://Utilities/FileHandle.cpp \
+    file://Utilities/FileHandle.hpp \
     "
 
 S = "${WORKDIR}"

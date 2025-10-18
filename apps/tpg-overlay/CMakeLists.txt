@@ -18,9 +18,9 @@ pkg_check_modules(GPIODCXX REQUIRED IMPORTED_TARGET libgpiodcxx>=2.0)
 
 
 set(SOURCES
-    VideoProcessing/VideoCaptureV4L2.cpp
-    VideoProcessing/VideoCaptureV4L2.hpp
-    VideoProcessing/UdpVideoSender.hpp
+    Gpio/Gpio.cpp
+    TpgDriver/TpgDriver.cpp
+    Utilities/FileHandle.cpp
     main.cpp
 )
 
@@ -29,7 +29,9 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
-        VideoProcessing/
+        Gpio/
+        TpgDriver/
+        Utilities/
 )
 
 target_link_libraries(${PROJECT_NAME}
