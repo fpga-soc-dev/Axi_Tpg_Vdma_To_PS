@@ -213,7 +213,7 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.HAS_AXI4S_SLAVE {0} \
     CONFIG.MAX_DATA_WIDTH {8} \
-    CONFIG.SAMPLES_PER_CLOCK {2} \
+    CONFIG.SAMPLES_PER_CLOCK {1} \
   ] $v_tpg_0
 
 
@@ -221,7 +221,7 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
   set axi_vdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_vdma axi_vdma_0 ]
   set_property -dict [list \
     CONFIG.c_include_mm2s {0} \
-    CONFIG.c_include_s2mm_dre {1} \
+    CONFIG.c_include_s2mm_dre {0} \
     CONFIG.c_s2mm_linebuffer_depth {4096} \
     CONFIG.c_s2mm_max_burst_length {128} \
   ] $axi_vdma_0
@@ -230,22 +230,15 @@ proc create_hier_cell_tpg_top { parentCell nameHier } {
   # Create instance: axis_subset_converter_0, and set properties
   set axis_subset_converter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_subset_converter axis_subset_converter_0 ]
   set_property -dict [list \
-    CONFIG.M_HAS_TKEEP {1} \
     CONFIG.M_HAS_TLAST {1} \
     CONFIG.M_HAS_TREADY {1} \
-    CONFIG.M_HAS_TSTRB {1} \
-    CONFIG.M_TDATA_NUM_BYTES {6} \
-    CONFIG.M_TDEST_WIDTH {1} \
-    CONFIG.M_TID_WIDTH {1} \
+    CONFIG.M_TDATA_NUM_BYTES {3} \
     CONFIG.M_TUSER_WIDTH {1} \
-    CONFIG.S_HAS_TKEEP {1} \
     CONFIG.S_HAS_TLAST {1} \
     CONFIG.S_HAS_TREADY {1} \
-    CONFIG.S_HAS_TSTRB {1} \
-    CONFIG.S_TDATA_NUM_BYTES {6} \
-    CONFIG.S_TDEST_WIDTH {1} \
-    CONFIG.S_TID_WIDTH {1} \
+    CONFIG.S_TDATA_NUM_BYTES {3} \
     CONFIG.S_TUSER_WIDTH {1} \
+    CONFIG.TDATA_REMAP {tdata[23:16],tdata[7:0],tdata[15:8]} \
   ] $axis_subset_converter_0
 
 

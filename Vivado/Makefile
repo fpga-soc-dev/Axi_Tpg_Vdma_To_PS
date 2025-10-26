@@ -15,7 +15,7 @@ check_timing:
 	vivado -mode batch -nojournal -source check_timing.tcl -notrace
 
 clean_logs:
-	rm -rf *.jou *.log NA .Xil
+	rm -rf *.jou *.log *.str NA .Xil
 	
 clean:
-	rm -rf $(board_name) *.jou *.log NA .Xil
+	rm -rf $(board_name) *.jou *.log *.str NA .Xil
